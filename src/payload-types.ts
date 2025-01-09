@@ -127,7 +127,15 @@ export interface Page {
       | null;
     media?: (number | null) | Media;
   };
-  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock | SinglePostBlock)[];
+  layout: (
+    | CallToActionBlock
+    | ContentBlock
+    | MediaBlock
+    | ArchiveBlock
+    | FormBlock
+    | SinglePostBlock
+    | HighlightedBlock
+  )[];
   meta?: {
     title?: string | null;
     /**
@@ -683,6 +691,40 @@ export interface SinglePostBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HighlightedBlock".
+ */
+export interface HighlightedBlock {
+  introContent?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  populateBy?: 'collection' | null;
+  relationTo?: 'posts' | null;
+  categories?: (number | Category)[] | null;
+  limit?: number | null;
+  selectedDocs?:
+    | {
+        relationTo: 'posts';
+        value: number | Post;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'highlighted';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -876,6 +918,7 @@ export interface PagesSelect<T extends boolean = true> {
         archive?: T | ArchiveBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
         singlePost?: T | SinglePostBlockSelect<T>;
+        highlighted?: T | HighlightedBlockSelect<T>;
       };
   meta?:
     | T
@@ -980,6 +1023,20 @@ export interface FormBlockSelect<T extends boolean = true> {
  * via the `definition` "SinglePostBlock_select".
  */
 export interface SinglePostBlockSelect<T extends boolean = true> {
+  populateBy?: T;
+  relationTo?: T;
+  categories?: T;
+  limit?: T;
+  selectedDocs?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HighlightedBlock_select".
+ */
+export interface HighlightedBlockSelect<T extends boolean = true> {
+  introContent?: T;
   populateBy?: T;
   relationTo?: T;
   categories?: T;
